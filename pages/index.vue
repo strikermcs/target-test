@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import type { ITarget, IArea } from '~/types';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const baselineMenuActive = ref<boolean>(false)
 const baselineInserted = ref<boolean>(false)
 const targetEditFormRef = ref()
+const baselineMenuRef = ref()
+const datePickerRef = ref()
+const datePickerActive = ref(false)
 const isReadMode = ref<boolean>(false)
 
 const Area = reactive<IArea>({
@@ -20,6 +25,14 @@ onClickOutside(targetEditFormRef, () => {
     if(Area.targets.length > 0) {
         isReadMode.value = true
     }
+})
+
+onClickOutside(datePickerRef, () => {
+    datePickerActive.value = false
+})
+
+onClickOutside(baselineMenuRef, () => {
+    baselineMenuActive.value = false
 })
 
 const createTargetHandler = (target: ITarget) => {
@@ -58,7 +71,7 @@ const changeBaselineUnitHandler = (v: string) => {
 
 const insertBaseLineHandler = () => {
     baselineInserted.value = true
-    Area.baseline.baselineValue = 'baseline'
+    Area.baseline.baselineValue = ''
 }
 </script>
 
@@ -87,16 +100,31 @@ const insertBaseLineHandler = () => {
                 <div class="flex justify-end mt-4" v-if="baselineInserted">
                     <div class="flex items-center relative">
                         <span class="mr-3">Baseline</span>
+                        <div class=" absolute top-5 left-5" 
+                                ref="datePickerRef"
+                                v-if="datePickerActive" 
+                            >
+                                <VueDatePicker 
+                                    v-model="Area.baseline.baselineValue" 
+                                    inline
+                                    auto-apply
+                                    :year-picker="Area.baseline.baselineUnit === 'Year'"
+                                /> 
+                            </div> 
                         <input 
-                            type="text" 
+                            type="text"
+                            @click="datePickerActive = true" 
                             v-model="Area.baseline.baselineValue"
                             class="w-[70px] p-1 h-6 bg-slate-200"
+                            placeholder="baseline"
+                            readonly
                         />
                         <span 
                             class="px-1 bg-gray-500 text-white cursor-pointer"
                             @click="baselineMenuActive = true"
                         >{{Area.baseline.baselineUnit}}</span>
                         <MenusDateUnit
+                            ref="baselineMenuRef"
                             class=" absolute top-7 left-10" 
                             v-if="baselineMenuActive"
                             @change="changeBaselineUnitHandler"

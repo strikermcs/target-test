@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import type { ITarget } from '~/types';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 interface Props {
     target : ITarget
 }
 
 const props = defineProps<Props>()
+const targetModalRef = ref()
+const deadlineModalRef = ref()
+const datePickerRef = ref()
+const datePickerActive = ref(false)
+
 const emits = defineEmits<{
     (e: 'targetChange', target: Partial<ITarget>): void
 }>()
@@ -13,10 +20,22 @@ const emits = defineEmits<{
 const targetUnitMenuChangeActive = ref<boolean>(false)
 const deadlineUnitMenuChangeActive = ref<boolean>(false)
 
+onClickOutside(targetModalRef, () => {
+    targetUnitMenuChangeActive.value = false
+})
+
+onClickOutside(datePickerRef, () => {
+    datePickerActive.value = false
+})
+
+onClickOutside(deadlineModalRef, () => {
+    deadlineUnitMenuChangeActive.value = false
+})
+
 const targetObj = reactive({
-    targetValue: props.target.targetValue,
+    targetValue: '',
     targetUnit: props.target.targetUnit,
-    deadlineValue: props.target.deadlineValue,
+    deadlineValue: '',
     deadlineUnit: props.target.deadlineUnit
 })
 
@@ -51,12 +70,14 @@ watchEffect(() => {
                 type="text" 
                 v-model="targetObj.targetValue"
                 class="w-[60px] h-6 p-1 bg-slate-300 rounded-l-sm"
+                placeholder="target"
             >
             <span 
                 class="px-1 rounded-r-sm bg-slate-500 cursor-pointer text-white"
                 @click="targetUnitMenuChangeActive = true"
             >{{targetObj.targetUnit}}</span>
-            <MenusTargetUnit 
+            <MenusTargetUnit
+                ref="targetModalRef" 
                 class=" absolute top-7 left-10"
                 @change="changeTargetUnitHandler"
                 v-if="targetUnitMenuChangeActive"
@@ -64,16 +85,31 @@ watchEffect(() => {
         </div>
         <span>{{target.centerText}}</span>
         <div class="flex items-center relative">
+            <div class=" absolute top-5 left-5" 
+                ref="datePickerRef"
+                v-if="datePickerActive" 
+            >
+                <VueDatePicker 
+                    v-model="targetObj.deadlineValue" 
+                    inline
+                    auto-apply
+                    :year-picker="targetObj.deadlineUnit === 'Year'"
+                /> 
+            </div> 
             <input 
                 type="text" 
+                @click="datePickerActive = true"
                 v-model="targetObj.deadlineValue"
                 class="w-[70px] h-6 p-1 bg-slate-300 rounded-l-sm"
+                placeholder="deadline"
+                readonly
             />
             <span 
                 class="px-1 rounded-r-sm bg-slate-500 cursor-pointer text-white"
                 @click="deadlineUnitMenuChangeActive = true"
             >{{targetObj.deadlineUnit}}</span>
-            <MenusDateUnit 
+            <MenusDateUnit
+                ref="deadlineModalRef" 
                 class=" absolute top-7 left-10"
                 v-if="deadlineUnitMenuChangeActive"
                 @change="changeDeadlineUnitHandler"
