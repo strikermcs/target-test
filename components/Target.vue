@@ -33,9 +33,9 @@ onClickOutside(deadlineModalRef, () => {
 })
 
 const targetObj = reactive({
-    targetValue: '',
+    targetValue: props.target.targetValue === 'target' ? '' : props.target.targetValue,
     targetUnit: props.target.targetUnit,
-    deadlineValue: '',
+    deadlineValue: props.target.deadlineValue === 'deadline' ? '' : props.target.deadlineValue,
     deadlineUnit: props.target.deadlineUnit
 })
 
