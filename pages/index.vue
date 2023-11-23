@@ -74,7 +74,7 @@ const formatDate = (date: any) => {
    
     if(Area.baseline.baselineUnit === 'Month'){
         setTimeout(() => {
-            Area.baseline.baselineValue = `${date.getMonth()}`
+            Area.baseline.baselineValue = `${date.getMonth() + 1}`
        },10) 
          
        datePickerActive.value = false
@@ -125,7 +125,7 @@ const insertBaseLineHandler = () => {
                 <div class="flex justify-end mt-4" v-if="baselineInserted">
                     <div class="flex items-center relative">
                         <span class="mr-3">Baseline</span>
-                        <div class=" absolute top-5 left-5" 
+                        <div class=" absolute top-5 left-5 z-30" 
                                 ref="datePickerRef"
                                 v-if="datePickerActive" 
                             >
@@ -134,6 +134,7 @@ const insertBaseLineHandler = () => {
                                     inline
                                     auto-apply
                                     :year-picker="Area.baseline.baselineUnit === 'Year'"
+                                    :month-picker="Area.baseline.baselineUnit === 'Month'"
                                     :format="formatDate"
                                 /> 
                             </div> 

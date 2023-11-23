@@ -60,7 +60,7 @@ const formatDate = (date: any) => {
    
     if(targetObj.deadlineUnit === 'Month'){
         setTimeout(() => {
-            targetObj.deadlineValue = `${date.getMonth()}`
+            targetObj.deadlineValue = `${date.getMonth() + 1}`
        },10) 
          
        datePickerActive.value = false
@@ -109,7 +109,7 @@ watchEffect(() => {
         </div>
         <span>{{target.centerText}}</span>
         <div class="flex items-center relative">
-            <div class=" absolute top-5 left-5" 
+            <div class=" absolute top-5 left-5 z-30" 
                 ref="datePickerRef"
                 v-if="datePickerActive" 
             >
@@ -118,6 +118,7 @@ watchEffect(() => {
                     inline
                     auto-apply
                     :year-picker="targetObj.deadlineUnit === 'Year'"
+                    :month-picker="targetObj.deadlineUnit === 'Month'"
                     :format="formatDate"
                 /> 
             </div> 
