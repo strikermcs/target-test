@@ -11,4 +11,8 @@ export const parseTargetString = (text: string): Partial<ITarget> => {
         deadlineUnit: splitingText[5],
         endText: splitingText[6]
     }
-} 
+}
+
+export const mounths = [
+    'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+]

@@ -2,6 +2,7 @@
 import type { ITarget } from '~/types';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import { mounths } from '~/helpers'
 
 interface Props {
     target : ITarget
@@ -60,7 +61,7 @@ const formatDate = (date: any) => {
    
     if(targetObj.deadlineUnit === 'Month'){
         setTimeout(() => {
-            targetObj.deadlineValue = `${date.getMonth() + 1}`
+            targetObj.deadlineValue = `${mounths[date.getMonth()]}`
        },10) 
          
        datePickerActive.value = false

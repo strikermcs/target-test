@@ -2,6 +2,7 @@
 import type { ITarget, IArea } from '~/types';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import { mounths } from '~/helpers'
 
 const baselineMenuActive = ref<boolean>(false)
 const baselineInserted = ref<boolean>(false)
@@ -74,7 +75,7 @@ const formatDate = (date: any) => {
    
     if(Area.baseline.baselineUnit === 'Month'){
         setTimeout(() => {
-            Area.baseline.baselineValue = `${date.getMonth() + 1}`
+            Area.baseline.baselineValue = `${mounths[date.getMonth()]}`
        },10) 
          
        datePickerActive.value = false
