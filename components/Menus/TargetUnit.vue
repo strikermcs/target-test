@@ -1,0 +1,41 @@
+<script setup lang="ts">
+
+const values = [
+    '%',
+    'Custom'
+]
+
+const valueUnit = ref<string>('%')
+const customValue = ref<string>('km') 
+
+const emits = defineEmits<{
+    (e: 'change', value: string): void
+}>()
+
+const changeHandler = (value : string) => {
+    valueUnit.value = value
+}
+
+const changeValue = () => {
+    if(valueUnit.value === 'Custom') {
+        emits('change', customValue.value)
+    }else {
+        emits('change', valueUnit.value)
+    }
+}
+
+</script>
+
+<template>
+    <div class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+        <div class="p-6">
+            <UiRadioButtonGroup :values="values" @change="changeHandler" default-value="%"/>
+            <input type="text" v-model="customValue" v-if="valueUnit==='Custom'" class="h-6 w-full p-1 mb-3"/>
+            <UiButton @click="changeValue">Change</UiButton>
+        </div>     
+    </div>
+</template>v
+
+<style scoped>
+
+</style>
