@@ -64,6 +64,31 @@ const targetChangeHandler = (target: Partial<ITarget>) => {
     })
 }
 
+const formatDate = (date: any) => {
+    if(Area.baseline.baselineUnit === 'Day'){
+       setTimeout(() => {
+        Area.baseline.baselineValue = `${date.getDate()}`
+       },10) 
+       datePickerActive.value = false
+    }
+   
+    if(Area.baseline.baselineUnit === 'Month'){
+        setTimeout(() => {
+            Area.baseline.baselineValue = `${date.getMonth()}`
+       },10) 
+         
+       datePickerActive.value = false
+    }
+
+    datePickerActive.value = false
+    return `${date}`
+}    
+
+const inputDeadlineClick = () => {
+    Area.baseline.baselineValue = ''
+    datePickerActive.value = true
+}
+
 const changeBaselineUnitHandler = (v: string) => {
     Area.baseline.baselineUnit = v
     baselineMenuActive.value = false
@@ -109,11 +134,12 @@ const insertBaseLineHandler = () => {
                                     inline
                                     auto-apply
                                     :year-picker="Area.baseline.baselineUnit === 'Year'"
+                                    :format="formatDate"
                                 /> 
                             </div> 
                         <input 
                             type="text"
-                            @click="datePickerActive = true" 
+                            @click="inputDeadlineClick" 
                             v-model="Area.baseline.baselineValue"
                             class="w-[70px] p-1 h-6 bg-slate-200"
                             placeholder="baseline"

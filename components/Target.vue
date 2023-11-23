@@ -50,6 +50,30 @@ const changeDeadlineUnitHandler = (v: string) => {
     deadlineUnitMenuChangeActive.value = false
 }
 
+const formatDate = (date: any) => {
+    if(targetObj.deadlineUnit === 'Day'){
+       setTimeout(() => {
+        targetObj.deadlineValue = `${date.getDate()}`
+       },10) 
+       datePickerActive.value = false
+    }
+   
+    if(targetObj.deadlineUnit === 'Month'){
+        setTimeout(() => {
+            targetObj.deadlineValue = `${date.getMonth()}`
+       },10) 
+         
+       datePickerActive.value = false
+    }
+
+    datePickerActive.value = false
+    return `${date}`
+}    
+
+const inputDeadlineClick = () => {
+    targetObj.deadlineValue = ''
+    datePickerActive.value = true
+}
 
 watchEffect(() => {
     emits('targetChange', {
@@ -94,11 +118,12 @@ watchEffect(() => {
                     inline
                     auto-apply
                     :year-picker="targetObj.deadlineUnit === 'Year'"
+                    :format="formatDate"
                 /> 
             </div> 
             <input 
                 type="text" 
-                @click="datePickerActive = true"
+                @click="inputDeadlineClick"
                 v-model="targetObj.deadlineValue"
                 class="w-[70px] h-6 p-1 bg-slate-300 rounded-l-sm"
                 placeholder="deadline"
