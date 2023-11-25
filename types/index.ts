@@ -1,12 +1,8 @@
+export type TParsedItemType = 'word' | 'target' | 'deadline'
+
 export interface ITarget {
     id: string
-    startText: string
-    targetValue: string
-    targetUnit: string
-    centerText: string
-    deadlineValue: string
-    deadlineUnit: string
-    endText: string
+    items: IParsedItem[]
 }
 
 export interface IBaseline {
@@ -18,4 +14,10 @@ export interface IArea {
     id: string
     baseline: IBaseline
     targets: ITarget[]
+}
+
+export interface IParsedItem {
+    type: TParsedItemType
+    value: string
+    unit?: string
 }

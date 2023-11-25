@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { ITarget, IArea } from '~/types';
+import type { ITarget, IArea, IParsedItem } from '~/types';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { mounths } from '~/helpers'
+import { getFormatDate } from '~/helpers'
 
 const baselineMenuActive = ref<boolean>(false)
 const baselineInserted = ref<boolean>(false)
@@ -41,46 +41,46 @@ const createTargetHandler = (target: ITarget) => {
 }
 
 const createNewTarget = () => {
+    const items:IParsedItem[] = []
+
+    Area.targets[0].items.forEach(i => {
+        if(i.type === 'target') {
+            const item: IParsedItem = {
+                type: 'target',
+                value: '',
+                unit: i.unit
+            }
+            items.push(item)
+        } else if(i.type === 'deadline') {
+            const item: IParsedItem = {
+                type: 'deadline',
+                value: '',
+                unit: i.unit
+            }
+            items.push(item)
+        } else {
+            items.push(i)
+        }
+    })
+
     const newTarget: ITarget= {
         id: Date.now().toString(),
-        targetValue: 'target',
-        targetUnit: Area.targets[0].targetUnit,
-        deadlineValue: 'deadline',
-        deadlineUnit: Area.targets[0].deadlineUnit,
-        startText: Area.targets[0].startText,
-        centerText: Area.targets[0].centerText,
-        endText: Area.targets[0].endText
+        items
     }
+
     Area.targets.push(newTarget)
 }
 
-const targetChangeHandler = (target: Partial<ITarget>) => {
+const targetChangeHandler = (target: ITarget) => {
     Area.targets.forEach(t => {
         if(t.id === target.id) {
-            t.targetValue = target.targetValue as string
-            t.targetUnit = target.targetUnit as string
-            t.deadlineValue = target.deadlineValue as string
-            t.deadlineUnit = target.deadlineUnit as string
+            t.items = target.items
         }
     })
 }
 
 const formatDate = (date: any) => {
-    if(Area.baseline.baselineUnit === 'Day'){
-       setTimeout(() => {
-        Area.baseline.baselineValue = `${date.getDate()}`
-       },10) 
-       datePickerActive.value = false
-    }
-   
-    if(Area.baseline.baselineUnit === 'Month'){
-        setTimeout(() => {
-            Area.baseline.baselineValue = `${mounths[date.getMonth()]}`
-       },10) 
-         
-       datePickerActive.value = false
-    }
-
+    Area.baseline.baselineValue = getFormatDate(date, Area.baseline.baselineUnit)
     datePickerActive.value = false
     return `${date}`
 }    
@@ -102,7 +102,7 @@ const insertBaseLineHandler = () => {
 </script>
 
 <template>
-    <div class="flex w-full gap-6">
+    <div class="flex w-full gap-6 flex-wrap flex-col-reverse md:flex-nowrap md:flex-row">
         <div class="max-w-[800px] w-full">
             <div 
                 v-if="Area.targets.length > 0 && !isReadMode" 
@@ -131,7 +131,6 @@ const insertBaseLineHandler = () => {
                                 v-if="datePickerActive" 
                             >
                                 <VueDatePicker 
-                                    v-model="Area.baseline.baselineValue" 
                                     inline
                                     auto-apply
                                     :year-picker="Area.baseline.baselineUnit === 'Year'"
@@ -156,6 +155,7 @@ const insertBaseLineHandler = () => {
                             class=" absolute top-7 left-10" 
                             v-if="baselineMenuActive"
                             @change="changeBaselineUnitHandler"
+                            :value="Area.baseline.baselineUnit"
                         />
                     </div>
                 </div>

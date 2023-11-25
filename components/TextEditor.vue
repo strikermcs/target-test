@@ -15,26 +15,29 @@ const menuLeftPosition = computed(() => {
 const innerText = ref<string>('')
 
 const isTarget = computed(() => {
-    return innerText.value?.includes('|target|%|')
+    return innerText.value?.includes('[target]')
 })
 
 const isDeadline = computed(() => {
-    return innerText.value.includes('|deadline|Year|')
+    return innerText.value.includes('[deadline]')
 })
 
 const insertTargetHandler = () => {
-    innerText.value += ' |target|%| '
+    innerText.value += ' [target] '
     contextMenuOpen.value = false
 }
 
 const insertDeadlineHandler = () => {
-    innerText.value += ' |deadline|Year| '
+    innerText.value += ' [deadline] '
     contextMenuOpen.value = false
 }
 
 const createTarget = () => {
     const parsedString = parseTargetString(innerText.value)
-    const target:ITarget = {id: Date.now().toString(), ...parsedString} as ITarget
+    const target:ITarget = {
+        id: Date.now().toString(),
+        items: parsedString
+    }
 
     emits('createTarget', target)
 }

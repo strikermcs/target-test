@@ -1,18 +1,53 @@
-import type { ITarget } from "~/types"
+import type { IParsedItem } from "~/types"
+import dayjs from 'dayjs'
 
-export const parseTargetString = (text: string): Partial<ITarget> => {
-    const splitingText = text.split('|')
-    return {
-        startText: splitingText[0],
-        targetValue: splitingText[1],
-        targetUnit: splitingText[2],
-        centerText: splitingText[3],
-        deadlineValue: splitingText[4],
-        deadlineUnit: splitingText[5],
-        endText: splitingText[6]
-    }
+export const parseTargetString = (text: string): IParsedItem[] => {
+    const parsedItems: IParsedItem[] = []
+
+    const splitingText = text.split(' ')
+
+    splitingText.forEach(i => {
+        if(i === '[target]') {
+            const item: IParsedItem = {
+                type: 'target',
+                value: '',
+                unit: '%'
+            }
+
+            parsedItems.push(item)
+        } else if(i === '[deadline]') {
+            const item: IParsedItem = {
+                type: 'deadline',
+                value: '',
+                unit: 'Year'
+            }
+
+            parsedItems.push(item)
+        } else if(i === '') {
+            
+        }  
+        
+        else {
+            const item: IParsedItem = {
+                type: 'word',
+                value: i
+            }
+
+            parsedItems.push(item)
+        }
+    })
+
+  return parsedItems
 }
 
-export const mounths = [
-    'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
-]
+export const getFormatDate = (date: any, type: string): string => {
+    if(type === 'Day'){
+       return dayjs(date).format('DD MMM YYYY')
+    }
+   
+    if(type === 'Month'){
+       return dayjs(date).format('MMM YYYY')
+    }
+    return dayjs(date).format('YYYY')
+}  
+

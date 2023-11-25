@@ -25,7 +25,12 @@ defineEmits<{
                     v-for="target in area.targets"
                     :key="target.id"
                 >
-                    {{target.startText + target.targetValue + target.targetUnit + target.centerText+target.deadlineValue}}
+                    <span
+                        v-for="item in target.items"
+                        :class="{'font-bold': item.type == 'target' || item.type == 'deadline'}" 
+                    >
+                        {{item.value}} <span class="mr-1" v-if="item.type != 'deadline'">{{item.unit}}</span>
+                    </span>
                 </li>
             </ul>
             <div class="flex justify-end">

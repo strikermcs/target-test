@@ -1,4 +1,9 @@
 <script setup lang="ts">
+interface Props {
+    value: string
+}
+
+const props = defineProps<Props>()
 
 const values = [
     'Year',
@@ -6,7 +11,7 @@ const values = [
     'Day'
 ]
 
-const valueUnit = ref<string>('Year')
+const valueUnit = ref<string>(props.value)
 
 const emits = defineEmits<{
     (e: 'change', value: string): void
@@ -25,7 +30,7 @@ const changeValue = () => {
 <template>
     <div class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
         <div class="p-6">
-            <UiRadioButtonGroup :values="values" @change="changeHandler" default-value="Year"/>
+            <UiRadioButtonGroup :values="values" @change="changeHandler" :default-value="value"/>
             <UiButton @click="changeValue">Change</UiButton>
         </div>     
     </div>
